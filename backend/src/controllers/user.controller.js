@@ -8,6 +8,8 @@ import { User } from "../models/user.model.js"
 
 const registerUser = async (req, res) => {
     try {
+        // User will be asked for three things: username, email, and password
+        // These three will be stored in the 'req.body'
         const { username, email, password } = req.body;
 
         // Basic Validation
@@ -18,7 +20,7 @@ const registerUser = async (req, res) => {
         // Checks if user already exists in the system
         const existing = await User.findOne({ email: email.toLowerCase() });
         if (existing) {
-            return res.statue(400).json({ message: "User already exists!" });
+            return res.status(400).json({ message: "User already exists!" });
         }
 
         // Create user
@@ -27,10 +29,14 @@ const registerUser = async (req, res) => {
             username,
             email: email.toLowerCase,
             password,
-        })
+            loggedIn: false
+        });
 
+        // Response for when user creation is successful
         res.status(201).json({ 
             message: "User successfully registered",
+
+            // Next line is what gets stored in the response after successful registration of the user
             user: {id: user._id, email: user.email, username: user.username }
         })
     } catch (error) {
